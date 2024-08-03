@@ -15,16 +15,16 @@
       steps:
         - name: Checkout code
           uses: actions/checkout@v2
-  
+
         - name: Set up Python
           uses: actions/setup-python@v2
           with:
             python-version: 3.12
-  
+
         - name: Install dependencies
           run: |
             pip install setuptools norminette
-  
+
         - name: Run norminette checks
           run: |
             norminette
@@ -39,12 +39,11 @@
         - name: install docker-compose
           run: |
             sudo apt-get update
-            sudo apt-get install -y docker-compose
+            sudo apt-get install -y make gcc
 
         - name: Create Makefile for testing
           run: |
-            cat <<EOF > Makefile
-            SRCS= $(shell find . -type f -name "*.c")
+            echo 'SRCS= $(shell find . -type f -name "*.c")
             INCLUDES= $(shell find . -type f -name "*.h")
             OBJS= $(SRCS:.c=.o)
             CC= cc
@@ -52,14 +51,13 @@
             NAME= uniq_name_][
             all: $(NAME)
             $(NAME): $(OBJS)
-              $(CC) $(OBJS) -o $(NAME)
+            \t$(CC) $(OBJS) -o $(NAME)
             %.o: %.c $(INCLUDES)
-              $(CC) $(CFLAGS)  -c $< -o $@
-            EOF
+            \t$(CC) $(CFLAGS)  -c $< -o $@' > Makefile
         - name: Run Services
           run: |
             make
-  
+
     # build-microservices:
     #   needs: [lint-microservices, test-microservices]
     #   runs-on: ubuntu-latest
@@ -69,13 +67,13 @@
     #   steps:
     #     - name: Checkout code
     #       uses: actions/checkout@v2
-  
+
     #     - name: Log in to Docker Hub
     #       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-  
+
     #     - name: Build and push backend images
     #       run: |
     #         cd services/${{ matrix.service }}/backend
     #         docker build -t ${{ secrets.CI_REGISTRY_IMAGE }}-${{ matrix.service }}:${{ github.sha }} -t ${{ secrets.CI_REGISTRY_IMAGE }}-${{ matrix.service }}:latest .
     #         docker push ${{ secrets.CI_REGISTRY_IMAGE }}-${{ matrix.service }}:${{ github.sha }}
-    #         docker push ${{ secrets.CI_REGISTRY_IMAGE }}-${{ matrix.service }}:latest  
+    #         docker push ${{ secrets.CI_REGISTRY_IMAGE }}-${{ matrix.service }}:latest
