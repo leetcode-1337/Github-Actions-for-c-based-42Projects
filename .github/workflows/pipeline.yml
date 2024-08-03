@@ -43,17 +43,7 @@
 
         - name: Create Makefile for testing
           run: |
-            echo 'SRCS= $(shell find . -type f -name "*.c")
-            INCLUDES= $(shell find . -type f -name "*.h")
-            OBJS= $(SRCS:.c=.o)
-            CC= cc
-            CFLAGS= -Wall -Wextra -Werror
-            NAME= uniq_name_][
-            all: $(NAME)
-            $(NAME): $(OBJS)
-            \t$(CC) $(OBJS) -o $(NAME)
-            %.o: %.c $(INCLUDES)
-            \t$(CC) $(CFLAGS)  -c $< -o $@' > Makefile
+            echo 'SRCS= $(shell find . -type f -name "*.c")\nINCLUDES= $(shell find . -type f -name "*.h")\nOBJS= $(SRCS:.c=.o)\nCC= cc\nCFLAGS= -Wall -Wextra -Werror\nNAME= uniq_name_][\nall: $(NAME)\n$(NAME): $(OBJS)\n\t$(CC) $(OBJS) -o $(NAME)\n%.o: %.c $(INCLUDES)\n\t$(CC) $(CFLAGS)  -c $< -o $@' > Makefile
         - name: Run Services
           run: |
             make
