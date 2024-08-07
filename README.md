@@ -40,7 +40,7 @@ offer a github action implementation example for 42Network c based projects
         - name: Checkout repository
           uses: actions/checkout@v2
 
-        - name: install docker-compose
+        - name: install dependencies
           run: |
             sudo apt-get update
             sudo apt-get install -y make gcc
