@@ -1,90 +1,173 @@
-# Github-Actions-for-c-based-42Projects
-offer a github action implementation example for 42Network c based projects
+![Licence](https://img.shields.io/badge/License-MIT-blue.svg)
+![ReadMe](https://img.shields.io/badge/ReadMe-018EF5?logo=readme&logoColor=fff&style=flat-square)
+# GitHub Actions for C-based 42 Projects
 
-```yml
----
-  name: NORM AND FLAGS CHECKS
+This README offers examples of how to set up GitHub Actions for 42 Network C-based projects, including norminette checks and build processes. 
 
-  on:
-    push:
-      branches:
-        - main
-    pull_request:
-      branches:
-        - '*'
+## Table of Contents
 
-  jobs:
-    check-norm:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
+- [Example 1: Basic Norminette and Build Workflow](#example-1-basic-norminette-and-build-workflow)
+- [Example 2: MinilibX Docker Integration Workflow](#example-2-minilibx-docker-integration-workflow)
+- [Customization](#customization)
+- [Docker Image](#docker-image)
 
-        - name: Set up Python
-          uses: actions/setup-python@v2
-          with:
-            python-version: 3.12
+## Example 1: Basic Norminette and Build Workflow
 
-        - name: Install dependencies
-          run: |
-            pip install setuptools norminette
-
-        - name: Run norminette checks
-          run: |
-            norminette
-
-    make-with-flags:
-      runs-on: ubuntu-latest
-      needs: check-norm
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v2
-
-        - name: install dependencies
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y make gcc
-
-        - name: Create Makefile for testing
-          run: |
-            echo -e 'SRCS= $(shell find . -type f -name "*.c")\nINCLUDES= $(shell find . -type f -name "*.h")\nOBJS= $(SRCS:.c=.o)\nCC= cc\nCFLAGS= -Wall -Wextra -Werror\nNAME= uniq_name_][\nall: $(NAME)\n$(NAME): $(OBJS)\n\t$(CC) $(OBJS) -o $(NAME)\n%.o: %.c $(INCLUDES)\n\t$(CC) $(CFLAGS)  -c $< -o $@' > Makefile
-        - name: Run Services
-          run: |
-            make
-```
----
-This is a GitHub Actions workflow file written in YAML. It defines two jobs: `check-norm` and `make-with-flags`.
----
-1. `check-norm` job:
-   - It runs on the latest version of Ubuntu.
-   - It checks out your code using the `actions/checkout@v2` action.
-   - It sets up Python 3.12 using the `actions/setup-python@v2` action.
-   - It installs `setuptools` and `norminette` using pip.
-   - It runs `norminette` to check your code.
-
-
----
-2. `make-with-flags` job:
-   - It also runs on the latest version of Ubuntu.
-   - It depends on the `check-norm` job, meaning it will only run if `check-norm` completes successfully.
-   - It checks out your code using the `actions/checkout@v2` action.
-   - It installs `make` and `gcc` using `apt-get`.
-   - It creates a `Makefile` for testing. The `Makefile` compiles all `.c` files found in the repository and links them into a single executable named `uniq_name_][`.
-   - It runs `make` to build the executable.
-
-This workflow is triggered on every push and pull request to any branch of your repository.
-
-you can customize it by specifying on which branches to run this workflow :
+This example demonstrates a basic GitHub Actions workflow for C-based projects, focusing on norminette checks and building the project.
 
 ```yaml
-  on:
-    push:
-      branches:
-        - main
-        - and so on for example
-    pull_request:
-      branches:
-        - main
-        - and so on for example
+---
+name: NORM AND FLAGS CHECKS
 
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  check-norm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          pip install setuptools norminette
+
+      - name: Run norminette checks
+        run: |
+          norminette
+
+  make-with-flags:
+    runs-on: ubuntu-latest
+    needs: check-norm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make gcc
+
+      - name: Create Makefile for testing
+        run: |
+          echo -e 'SRCS= $(shell find . -type f -name "*.c")\nINCLUDES= $(shell find . -type f -name "*.h")\nOBJS= $(SRCS:.c=.o)\nCC= cc\nCFLAGS= -Wall -Wextra -Werror\nNAME= uniq_name_][\nall: $(NAME)\n$(NAME): $(OBJS)\n\t$(CC) $(OBJS) -o $(NAME)\n%.o: %.c $(INCLUDES)\n\t$(CC) $(CFLAGS)  -c $< -o $@' > Makefile
+      - name: Run Services
+        run: |
+          make
 ```
+
+### Explanation
+
+1. **`check-norm` Job:**
+   - Runs on the latest Ubuntu.
+   - Checks out the code using [actions/checkout@v2](https://github.com/actions/checkout).
+   - Sets up Python 3.12 using [actions/setup-python@v2](https://github.com/actions/setup-python).
+   - Installs `setuptools` and `norminette` using pip.
+   - Runs `norminette` to check the code.
+
+2. **`make-with-flags` Job:**
+   - Runs on the latest Ubuntu and depends on the successful completion of `check-norm`.
+   - Checks out the code using [actions/checkout@v2](https://github.com/actions/checkout).
+   - Installs `make` and `gcc` using `apt-get`.
+   - Creates a `Makefile` for testing, which compiles `.c` files and links them into an executable.
+   - Runs `make` to build the executable.
+
+## Example 2: MinilibX Docker Integration Workflow
+
+This example demonstrates a GitHub Actions workflow for integrating MinilibX using Docker.
+
+```yaml
+---
+name: NORM AND FLAGS CHECKS FOR MINILIBX PROJECT
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  check-norm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          pip install setuptools norminette
+
+      - name: Run norminette checks
+        run: |
+          norminette
+
+  make-with-flags:
+    runs-on: ubuntu-latest
+    needs: check-norm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Pull Docker image
+        run: |
+          docker pull ahlyelamine/minilibx:latest
+
+      - name: Build and run project
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/opt ahlyelamine/minilibx:latest
+```
+
+### Explanation
+
+1. **`check-norm` Job:**
+   - Runs on the latest Ubuntu.
+   - Checks out the code using [actions/checkout@v2](https://github.com/actions/checkout).
+   - Sets up Python 3.12 using [actions/setup-python@v2](https://github.com/actions/setup-python).
+   - Installs `setuptools` and `norminette` using pip.
+   - Runs `norminette` to check the code.
+
+2. **`make-with-flags` Job:**
+   - Runs on the latest Ubuntu and depends on the successful completion of `check-norm`.
+   - Checks out the code using [actions/checkout@v3](https://github.com/actions/checkout).
+   - Pulls the Docker image [`ahlyelamine/minilibx:latest`](https://hub.docker.com/r/ahlyelamine/minilibx).
+   - Builds and runs the project using Docker with the workspace mounted to `/opt` in the container.
+
+## Customization
+
+To customize the branches that trigger these workflows, modify the `on` section:
+
+```yaml
+on:
+  push:
+    branches:
+      - main
+      - feature-branch
+  pull_request:
+    branches:
+      - main
+      - feature-branch
+```
+
+This workflow triggers on every push and pull request to the specified branches.
+
+## Docker Image
+
+The Docker image used in Example 2 is available on [Docker Hub](https://hub.docker.com/r/ahlyelamine/minilibx).
