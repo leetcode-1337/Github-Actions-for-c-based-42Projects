@@ -8,7 +8,7 @@ offer a github action implementation example for 42Network c based projects
   on:
     push:
       branches:
-        - '*'
+        - main
     pull_request:
       branches:
         - '*'
