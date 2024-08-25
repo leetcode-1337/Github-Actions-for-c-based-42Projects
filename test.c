@@ -3,20 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabato <sabato@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aahlyel <aahlyel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 04:45:58 by sabato            #+#    #+#             */
-/*   Updated: 2024/08/03 04:47:43 by sabato           ###   ########.fr       */
+/*   Updated: 2024/08/25 03:39:51 by aahlyel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+#include <mlx.h>
 
 int	main(void)
 {
 	char	login[8];
-
+	void	*mlx;
+	
 	(void)login;
-	printf("Login: ");
-	printf("Password: ");
+	mlx = mlx_init();
+	free(mlx);
+	return (0);
 }
