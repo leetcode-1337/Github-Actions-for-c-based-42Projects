@@ -1,0 +1,45 @@
+---
+  name: NORM AND FLAGS CHECKS FOR MINILIBX PROJECT
+
+  on:
+    push:
+      branches:
+        - '*'
+    pull_request:
+      branches:
+        - '*'
+
+  jobs:
+    check-norm:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.12
+
+        - name: Install dependencies
+          run: |
+            pip install setuptools norminette
+
+        - name: Run norminette checks
+          run: |
+            norminette
+
+    make-with-flags:
+      runs-on: ubuntu-latest
+      needs: check-norm
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+  
+        - name: Pull Docker image
+          run: |
+            docker pull ahlyelamine/minilibx:latest
+  
+        - name: Build and run project
+          run: |
+            docker run --rm -v ${{ github.workspace }}:/opt ahlyelamine/minilibx:latest
