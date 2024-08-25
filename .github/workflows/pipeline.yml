@@ -1,0 +1,49 @@
+---
+  name: NORM AND FLAGS CHECKS
+
+  on:
+    push:
+      branches:
+        - main
+    pull_request:
+      branches:
+        - '*'
+
+  jobs:
+    check-norm:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.12
+
+        - name: Install dependencies
+          run: |
+            pip install setuptools norminette
+
+        - name: Run norminette checks
+          run: |
+            norminette
+
+    make-with-flags:
+      runs-on: ubuntu-latest
+      needs: check-norm
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
+        - name: install dependencies
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y make gcc
+
+        - name: Create Makefile for testing
+          run: |
+            echo -e 'SRCS= $(shell find . -type f -name "*.c")\nINCLUDES= $(shell find . -type f -name "*.h")\nOBJS= $(SRCS:.c=.o)\nCC= cc\nCFLAGS= -Wall -Wextra -Werror\nNAME= uniq_name_][\nall: $(NAME)\n$(NAME): $(OBJS)\n\t$(CC) $(OBJS) -o $(NAME)\n%.o: %.c $(INCLUDES)\n\t$(CC) $(CFLAGS)  -c $< -o $@' > Makefile
+        - name: Run Services
+          run: |
+            make
