@@ -10,16 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx.h>
-#include <stdlib.h>
+#include <stdio.h>
 
 int	main(void)
 {
 	char	login[8];
-	void	*mlx;
 
 	(void)login;
-	mlx = mlx_init();
-	free(mlx);
-	return (0);
+	printf("Login: ");
+	printf("Password: ");
 }
