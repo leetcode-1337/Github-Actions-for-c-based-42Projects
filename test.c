@@ -6,7 +6,7 @@
 /*   By: aahlyel <aahlyel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 04:45:58 by sabato            #+#    #+#             */
-/*   Updated: 2024/08/25 03:39:51 by aahlyel          ###   ########.fr       */
+/*   Updated: 2024/08/25 03:41:29 by aahlyel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	main(void)
 {
 	char	login[8];
 	void	*mlx;
-	
+
 	(void)login;
 	mlx = mlx_init();
 	free(mlx);
